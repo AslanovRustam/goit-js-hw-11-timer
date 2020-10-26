@@ -1,33 +1,33 @@
+///Делаем таймер обратного отсчета
 const daysEl = document.querySelector('span[data-value="days"]');
 const hoursEl = document.querySelector('span[data-value="hours"]');
 const minsEl = document.querySelector('span[data-value="mins"]');
 const secsEl = document.querySelector('span[data-value="secs"]');
 
 class CountdownTimer {
-  constructor({ targetDate } = {}) {
+  constructor({ onTick, targetDate }) {
     this.targetDate = targetDate;
+    this.onTick = onTick;
   };
-}
-const countdownTimernew = new CountdownTimer({
-  selector: '#timer-1',
-  // targetDate: new Date('Dec 31, 2020'),
-  targetDate: new Date('Dec 31, 2020'),
-});
-// console.log(countdownTimernew.targetDate);
-const dateNowObj = {
   start() {
     const endTime = Date.now();
     // console.log(endTime);
     setInterval(() => {
       const currentTime = Date.now();
-      const deltaTime = endTime - currentTime;
+      const deltaTime = this.targetDate - currentTime;
         //  const deltaTime = targetDate -currentTime;
       const timer = getTimeComponents(deltaTime);
-      // console.log(`${days}:${hours}:${mins}:${secs}`);
-      updateClockface(timer)
+      this.onTick(timer)
+
     }, 1000);    
   }
 }
+
+const dateNowObj = new CountdownTimer({
+  onTick: updateClockface,
+  targetDate: new Date('Dec 31, 2020')
+});
+
 
 dateNowObj.start();
 
@@ -68,3 +68,6 @@ function updateClockface({days, hours, mins, secs}) {
     minsEl.textContent = `${mins}`;
     secsEl.textContent = `${secs}`;
   }
+
+  
+
